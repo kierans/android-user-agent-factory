@@ -1,0 +1,34 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:1.0.0"
+  }
+}
+
+apply plugin: "com.android.library"
+
+repositories {
+  jcenter()
+}
+
+android {
+  compileSdkVersion 21
+  buildToolsVersion "21.1.1"
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
+
+  sourceSets {
+    androidTest.setRoot("src/test")
+  }
+}
+
+dependencies {
+
+}
