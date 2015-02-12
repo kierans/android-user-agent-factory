@@ -5,10 +5,18 @@ buildscript {
 
   dependencies {
     classpath "com.android.tools.build:gradle:1.0.0"
+    classpath "com.github.dcendents:android-maven-plugin:1.2"
   }
 }
 
+group = "com.quasar.android"
+version = "0.0.1"
+
+def siteUrl = "https://bitbucket.org/kierans777/android-user-agent-factory/"
+def scmUrl = "https://kierans777@bitbucket.org/kierans777/android-user-agent-factory"
+
 apply plugin: "com.android.library"
+apply plugin: "com.github.dcendents.android-maven"
 
 repositories {
   jcenter()
@@ -19,6 +27,8 @@ android {
   buildToolsVersion "21.1.1"
 
   defaultConfig {
+    versionCode 1
+    versionName version
     minSdkVersion 7
     targetSdkVersion 21
 
@@ -41,4 +51,72 @@ android {
 
 dependencies {
 
+}
+
+install {
+  repositories.mavenInstaller {
+    pom {
+      project {
+        packaging "aar"
+
+        // Add your description here
+        name "Utility library to create a User Agent for a device."
+        url siteUrl
+
+        // Set your license
+        licenses {
+          license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+          }
+        }
+        developers {
+          developer {
+            id "kierans777"
+            name "Kieran Simpson"
+            email "kierans777@gmail.com"
+          }
+        }
+        scm {
+          connection scmUrl
+          developerConnection scmUrl
+          url siteUrl
+
+        }
+      }
+    }
+  }
+}
+
+task sourcesJar(type: Jar) {
+  from android.sourceSets.main.java.srcDirs
+  classifier = "sources"
+}
+
+task javadoc(type: Javadoc) {
+  source = android.sourceSets.main.java.srcDirs
+  classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = "javadoc"
+  from javadoc.destinationDir
+}
+
+artifacts {
+  archives javadocJar
+  archives sourcesJar
+}
+
+task artifacts {
+  group = "Help"
+  description = "Displays the artifacts associated with each configuration of " + project
+
+  doFirst {
+    configurations.findAll().each { config ->
+      println "${config}:"
+      config.allArtifacts.getFiles().each { file -> println "  " + file}
+      println " "
+    }
+  }
 }
