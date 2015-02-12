@@ -6,6 +6,7 @@ buildscript {
   dependencies {
     classpath "com.android.tools.build:gradle:1.0.0"
     classpath "com.github.dcendents:android-maven-plugin:1.2"
+    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0"
   }
 }
 
@@ -17,6 +18,7 @@ def scmUrl = "https://kierans777@bitbucket.org/kierans777/android-user-agent-fac
 
 apply plugin: "com.android.library"
 apply plugin: "com.github.dcendents.android-maven"
+apply plugin: "com.jfrog.bintray"
 
 repositories {
   jcenter()
@@ -85,6 +87,29 @@ install {
         }
       }
     }
+  }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+bintray {
+  user = properties.getProperty("bintray.user")
+  key = properties.getProperty("bintray.apikey")
+
+  configurations = [ "archives" ]
+
+  pkg {
+    repo = "maven"
+    name = project.name
+    websiteUrl = siteUrl
+    issueTrackerUrl = "https://bitbucket.org/kierans777/android-user-agent-factory/issues"
+    vcsUrl = scmUrl
+    licenses = [ "Apache-2.0" ]
+    labels = [ "android", "user-agent" ]
+
+    // manually publish just to make sure everything's OK.
+    publish = false
   }
 }
 
